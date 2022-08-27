@@ -6,7 +6,7 @@ FROM debian:10.2
 ARG adminPass=12345
 ARG mysqlPass=12345
 ARG pythonVersion=python3
-ARG appBranch=version-13
+ARG appBranch=version-14
 
 ###############################################
 # ENV 
@@ -210,6 +210,8 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     && cd $benchFolderName \
     # install erpnext
     && bench get-app erpnext $erpnextRepo --branch $appBranch \
+    # install payments
+    && bench get-app payments
     # delete temp file
     && sudo rm -rf /tmp/* \
     # start new site
