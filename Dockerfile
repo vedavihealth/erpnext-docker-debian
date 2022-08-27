@@ -63,7 +63,6 @@ RUN apt-get -y update \
     ###############################################
     && apt-get -y -q install \
     build-essential \
-    python3.10-venv \
     python3-venv \
     python3-dev \
     python3-setuptools \
@@ -131,6 +130,7 @@ RUN apt-get -y update \
     # psutil
     ###############################################
     && pip3 install --upgrade psutil \
+    && pip3 install --upgrade pip setuptools \
     ###############################################
     # [playbook] wkhtmltopdf
     ###############################################
