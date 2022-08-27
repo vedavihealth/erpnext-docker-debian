@@ -67,6 +67,7 @@ RUN apt-get -y update \
     python3-dev \
     python3-setuptools \
     python3-pip \
+    virtualenv \
     ###############################################
     # [playbook] common
     ###############################################
@@ -204,7 +205,7 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     ###############################################
     # install bench
     ###############################################
-    && sudo pip3 install frappe-bench \
+    && sudo pip3 install frappe-bench==5.10.1 \
     && bench init $benchFolderName --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     # cd into bench folder
     && cd $benchFolderName \
