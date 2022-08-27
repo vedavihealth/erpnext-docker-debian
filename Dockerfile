@@ -26,7 +26,7 @@ ENV benchPath=bench-repo \
     benchRepo="https://github.com/frappe/bench" \
     # Hot-fix: master branch didn't get jinja version bump and causing the error
     # https://github.com/frappe/bench/pull/1270
-    benchBranch=v5.10.1 \
+    benchBranch=v5.x \
     frappeRepo="https://github.com/frappe/frappe" \
     erpnextRepo="https://github.com/frappe/erpnext" \
     siteName=site1.local
@@ -206,8 +206,8 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     # install bench
     ###############################################
     && sudo -H pip3 install frappe-bench \
-    && bench init $benchFolderName --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
-    # cd into bench folder
+    && bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
+    # cd into bench folder $benchFolderName --frappe-path $frappeRepo
     && cd $benchFolderName \
     # install erpnext
     && bench get-app erpnext $erpnextRepo --branch $appBranch \
