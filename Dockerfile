@@ -211,7 +211,7 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     # install erpnext
     && bench get-app erpnext $erpnextRepo --branch $appBranch \
     # install payments
-    && bench get-app payments
+    && bench get-app payments \
     # delete temp file
     && sudo rm -rf /tmp/* \
     # start new site
