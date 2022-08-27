@@ -19,14 +19,14 @@ ENV LANGUAGE=en_US \
     LC_ALL=en_US.UTF-8
 # prerequisite version
 ENV mariadbVersion=10.3 \
-    nodejsVersion=12.x
+    nodejsVersion=14.x
 # frappe
 ENV benchPath=bench-repo \
     benchFolderName=bench \
     benchRepo="https://github.com/frappe/bench" \
     # Hot-fix: master branch didn't get jinja version bump and causing the error
     # https://github.com/frappe/bench/pull/1270
-    benchBranch=v5.x \
+    benchBranch=v5.10.1 \
     frappeRepo="https://github.com/frappe/frappe" \
     erpnextRepo="https://github.com/frappe/erpnext" \
     siteName=site1.local
@@ -205,7 +205,7 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     ###############################################
     # install bench
     ###############################################
-    && sudo pip3 install frappe-bench==5.10.1 \
+    && sudo -H pip3 install frappe-bench \
     && bench init $benchFolderName --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     # cd into bench folder
     && cd $benchFolderName \
