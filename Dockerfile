@@ -68,6 +68,7 @@ RUN apt-get -y update \
     python3-setuptools \
     python3-pip \
     virtualenv \
+    python3 \
     ###############################################
     # [playbook] common
     ###############################################
@@ -131,6 +132,7 @@ RUN apt-get -y update \
     ###############################################
     && pip3 install --upgrade psutil \
     && pip3 install --upgrade pip setuptools \
+    && python3 -m pip install --upgrade pip setuptools wheel \
     ###############################################
     # [playbook] wkhtmltopdf
     ###############################################
@@ -207,7 +209,7 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     ###############################################
     # install bench
     ###############################################
-    && sudo -H pip3 install frappe-bench \
+    && pip3 install frappe-bench \
     && bench init frappe-bench --verbose --frappe-branch $appBranch \
     # --python $pythonVersion 
     # cd into bench folder $benchFolderName --frappe-path $frappeRepo
