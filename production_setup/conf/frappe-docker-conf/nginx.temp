@@ -7,7 +7,7 @@ upstream bench-socketio-server {
 }
 
 server {
-        listen 80;
+        listen $PORT;
         server_name
                 ${NGINX_SERVER_NAME}
                 ;
