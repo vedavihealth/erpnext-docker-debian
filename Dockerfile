@@ -63,6 +63,7 @@ RUN apt-get -y update \
     ###############################################
     && apt-get -y -q install \
     build-essential \
+    python3.10-venv \
     python3-venv \
     python3-dev \
     python3-setuptools \
@@ -182,7 +183,8 @@ RUN apt-get -y update \
     # clean-up
     ###############################################
     && apt-get autoremove --purge -y \
-    && apt-get clean -y
+    && apt-get clean -y \
+    && apt-get clean all -y
 
 ###############################################
 # SET USER AND WORKDIR
