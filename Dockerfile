@@ -221,10 +221,9 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     && python3 -m pip install --user --upgrade psutil pip setuptools wheel \
     && sudo pip3 install frappe-bench \
     && sudo pip install frappe-bench \
-    # mkdir -p /home/frappe
-    && chmod o+x /home/frappe
+    && chmod o+x /home/frappe \
     && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
-    #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
+    #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion 
     # cd into bench folder 
     && cd $benchFolderName \
     # install payments
