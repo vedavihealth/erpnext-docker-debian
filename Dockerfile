@@ -205,7 +205,7 @@ WORKDIR /home/$systemUser
 COPY ./mariadb.cnf /etc/mysql/mariadb.cnf
 
 ####
-ENV PATH="${PATH}:~/home/frappe/.local/bin"
+ENV PATH="$PATH:~/home/frappe/.local/bin"
 
 ###############################################
 # INSTALL FRAPPE
@@ -221,7 +221,6 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     # cd /home/$systemUser/$benchFolderName \
     # bench --verbose setup requirements \
     # cd /home/$systemUser \
-    && sudo bench install psutil \
     && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
     # cd into bench folder 
