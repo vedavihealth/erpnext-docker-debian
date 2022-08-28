@@ -29,7 +29,8 @@ ENV benchPath=bench-repo \
     benchBranch=v5.x \
     frappeRepo="https://github.com/frappe/frappe" \
     erpnextRepo="https://github.com/frappe/erpnext" \
-    siteName=site1.local
+    siteName=site1.local \
+    PATH="$PATH:/home/frappe/.local/bin"
 
 ###############################################
 # INSTALL PREREQUISITE
