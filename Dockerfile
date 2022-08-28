@@ -214,15 +214,15 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     ###############################################
     # install bench
     ###############################################
-    && sudo pip3 install frappe-bench \
-    && sudo bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
+    && pip3 install frappe-bench \
+    && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
     # cd into bench folder 
     && cd $benchFolderName \
-    # install erpnext
-    && bench get-app erpnext $erpnextRepo --branch $appBranch \
     # install payments
     && bench get-app payments \
+    # install erpnext
+    && bench get-app erpnext $erpnextRepo --branch $appBranch \
     # delete temp file
     && sudo rm -rf /tmp/* \
     # start new site
