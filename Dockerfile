@@ -136,7 +136,7 @@ RUN apt-get -y update \
     && python3 -m pip install --upgrade pip setuptools wheel \
     && python3 -m pip install -U psutil pip wheel setuptools \
     && python3 -m ensurepip --upgrade \
-    && python3 -m venv env && . ./env/bin/activate \
+    # python3 -m venv env && . ./env/bin/activate \
     ###############################################
     # [playbook] wkhtmltopdf
     ###############################################
