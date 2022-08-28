@@ -131,7 +131,7 @@ RUN apt-get -y update \
     ###############################################
     # psutil
     ###############################################
-    && python3 -m venv env && source ./env/bin/activate \
+    && python3 -m venv env && . ./env/bin/activate \
     && python3 -m ensurepip --upgrade \
     && pip3 install --upgrade psutil \
     && pip3 install --upgrade pip setuptools \
