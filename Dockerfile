@@ -178,9 +178,9 @@ RUN apt-get -y update \
     && . ~/.bashrc \
     && nvm install v16.14.1 \
     # apt-get install -y -q nodejs \
-    && npm install -g npm@8.18.0 \
-    && npm install -g -y yarn \
-    && npm i resolve-deps \
+    # npm install -g npm@8.18.0 \
+    # npm install -g -y yarn \
+    # npm i resolve-deps \
     ###############################################
     # docker production setup
     ###############################################
@@ -205,6 +205,10 @@ RUN apt-get -y update \
 ###############################################
 USER $systemUser
 WORKDIR /home/$systemUser
+COPY ./ ./
+RUN npm install -g npm@8.18.0 \
+    && npm install -g -y yarn \
+    && npm i resolve-deps \
 
 ###############################################
 # COPY
