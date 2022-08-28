@@ -173,6 +173,7 @@ RUN apt-get -y update \
     && curl --silent --location https://deb.nodesource.com/setup_${nodejsVersion} | bash - \
     && apt-get install -y -q nodejs \
     && sudo npm install -g -y yarn \
+    && sudo npm i resolve-deps \
     ###############################################
     # docker production setup
     ###############################################
@@ -204,9 +205,6 @@ WORKDIR /home/$systemUser
 # mariadb config
 COPY ./mariadb.cnf /etc/mysql/mariadb.cnf
 
-####
-ENV PATH="$PATH:~/home/frappe/.local/bin"
-
 ###############################################
 # INSTALL FRAPPE
 ###############################################
@@ -216,12 +214,8 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     ###############################################
     # install bench
     ###############################################
-    && python3 -m pip install -U pip wheel setuptools \
-    && sudo -H pip3 install frappe-bench \
-    # cd /home/$systemUser/$benchFolderName \
-    # bench --verbose setup requirements \
-    # cd /home/$systemUser \
-    && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
+    && sudo pip3 install frappe-bench \
+    && sudo bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
     # cd into bench folder 
     && cd $benchFolderName \
