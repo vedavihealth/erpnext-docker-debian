@@ -214,7 +214,9 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     # install bench
     ###############################################
     && sudo -H pip3 install frappe-bench \
-    &&  bench --verbose $benchFolderName setup requirements \
+    && cd $benchFolderName \
+    && bench --verbose setup requirements \
+    && cd ..
     && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
     # cd into bench folder 
