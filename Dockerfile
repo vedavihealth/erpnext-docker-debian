@@ -176,10 +176,10 @@ RUN apt-get -y update \
     # curl --silent --location https://deb.nodesource.com/setup_${nodejsVersion} | bash - \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash \
     && . ~/.bashrc \
-    && sudo nvm install v16.14.1 \
+    && nvm install v16.14.1 \
     # apt-get install -y -q nodejs \
-    && sudo npm install -g -y yarn \
-    && sudo npm i resolve-deps \
+    && npm install -g -y yarn \
+    && npm i resolve-deps \
     ###############################################
     # docker production setup
     ###############################################
