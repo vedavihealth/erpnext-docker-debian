@@ -205,7 +205,7 @@ WORKDIR /home/$systemUser
 COPY ./mariadb.cnf /etc/mysql/mariadb.cnf
 
 ####
-RUN export PATH=$PATH:~/.local/bin \
+ENV PATH="${PATH}:~/home/frappe/.local/bin"
 
 ###############################################
 # INSTALL FRAPPE
