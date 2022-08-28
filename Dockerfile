@@ -129,6 +129,7 @@ RUN apt-get -y update \
     mariadb-common \
     libmariadbclient18 \
     python3-mysqldb \
+    psutil \
     ###############################################
     # psutil
     ###############################################
