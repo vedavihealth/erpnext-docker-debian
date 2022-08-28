@@ -135,7 +135,7 @@ RUN apt-get -y update \
     # pip3 install --upgrade pip setuptools \
     # python3 -m pip install --upgrade pip setuptools wheel \
     && python3 -m pip install -U psutil pip wheel setuptools \
-    && python3 -m pip install -U --user psutil pip wheel setuptools \
+    # python3 -m pip install -U --user psutil pip wheel setuptools \
     # python3 -m ensurepip --upgrade \
     # python3 -m venv env && . ./env/bin/activate \
     ###############################################
@@ -215,9 +215,9 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     ###############################################
     # install bench
     ###############################################
-    # python3 -m pip install --upgrade psutil pip setuptools wheel \
+    && python3 -m pip install --user --upgrade psutil pip setuptools wheel \
     # python3 -m venv env && . ./env/bin/activate \
-    && pip3 install frappe-bench \
+    && python 3 -m pip install frappe-bench \
     && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
     # cd into bench folder 
