@@ -217,7 +217,7 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     ###############################################
     && python3 -m pip install --user --upgrade psutil pip setuptools wheel \
     # python3 -m venv env && . ./env/bin/activate \
-    && python 3 -m pip install frappe-bench \
+    && python3 -m pip install frappe-bench \
     && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
     # cd into bench folder 
