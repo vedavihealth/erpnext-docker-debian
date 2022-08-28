@@ -134,8 +134,8 @@ RUN apt-get -y update \
     && python3 -m venv env && . ./env/bin/activate \
     && pip3 install --upgrade psutil \
     && pip3 install --upgrade pip setuptools \
-    # python3 -m pip install --upgrade pip setuptools wheel \
-    && python3 -m pip install -U --upgrade pip wheel setuptools \
+    && python3 -m pip install --upgrade pip setuptools wheel \
+    && python3 -m pip install -U pip wheel setuptools \
     && python3 -m ensurepip --upgrade \
     ###############################################
     # [playbook] wkhtmltopdf
@@ -214,10 +214,10 @@ RUN sudo chmod 644 /etc/mysql/my.cnf \
     # install bench
     ###############################################
     && sudo -H pip3 install frappe-bench \
-    #  bench --verbose setup requirements \
-    && bench init $benchFolderName --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
+    &&  bench --verbose $benchFolderName setup requirements \
+    && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
     #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion \
-    # cd into bench folder $benchFolderName --frappe-path $frappeRepo
+    # cd into bench folder 
     && cd $benchFolderName \
     # install erpnext
     && bench get-app erpnext $erpnextRepo --branch $appBranch \
