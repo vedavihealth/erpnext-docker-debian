@@ -1,15 +1,15 @@
-FROM debian:10.3
+FROM debian:11
 
 ###############################################
 # ARG
 ###############################################
 ARG adminPass=12345
 ARG mysqlPass=12345
-ARG pythonVersion=python3
+ARG pythonVersion=python3.10
 ARG appBranch=version-14
 
 ###############################################
-# ENV 
+# ENV
 ###############################################
 # user pass
 ENV systemUser=frappe
@@ -18,7 +18,7 @@ ENV LANGUAGE=en_US \
     LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 # prerequisite version
-ENV mariadbVersion=10.3 \
+ENV mariadbVersion=10.5 \
     nodejsVersion=16.x
 # frappe
 ENV benchPath=bench-repo \
@@ -59,23 +59,21 @@ RUN apt-get -y update \
     git \
     nano \
     openssl \
-    ###############################################
-    # python 3
-    ###############################################
-    && apt-get -y -q install \
     build-essential \
-    python3-venv \
-    python3-dev \
-    python3-setuptools \
-    python3-distutils \
-    python3-pip \
-    virtualenv \
-    python3 \
-    ###############################################
-    # [playbook] common
-    ###############################################
-    # debian_family.yml
-    && apt-get -y -q install \
+    zlib1g-dev \
+    libncurses5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libssl-dev \
+    libreadline-dev \
+    libffi-dev \
+    libsqlite3-dev \
+    libbz2-dev
+###############################################
+# [playbook] common
+###############################################
+# debian_family.yml
+RUN apt-get -y -q install \
     dnsmasq \
     fontconfig \
     htop \
@@ -90,8 +88,6 @@ RUN apt-get -y update \
     libffi-dev \
     ntp \
     postfix \
-    python3-dev \
-    python-tk \
     screen \
     xfonts-75dpi \
     xfonts-base \
@@ -100,10 +96,34 @@ RUN apt-get -y update \
     libsasl2-dev \
     libldap2-dev \
     libcups2-dev \
-    pv \
-    # debian.yml
-    ## pillow prerequisites for Debian >= 10
-    && apt-get -y -q install \
+    pv
+###############################################
+## Python 3.10 ##
+###############################################
+RUN echo 'export NPROC=$(nproc)' >> ~/.bashrc
+ENV NPROC $NPROC
+RUN bash -i -c 'echo "Compiling python build with $NPROC threads" \
+    && pushd /tmp \
+    && wget https://www.python.org/ftp/python/3.10.5/Python-3.10.5.tgz \
+    && tar -xf Python-3.10.5.tgz \
+    && cd Python-3.10.5/ \
+    && ./configure --enable-optimizations \
+    && make -j $NPROC \
+    && make altinstall \
+    && popd \
+    && rm -r /tmp/Python-3.10.5'
+
+#debug
+RUN python3.10 --version
+
+#pip3 shortcut
+RUN ln -s /usr/local/bin/pip3.10 /usr/local/bin/pip3
+#debug
+RUN pip3 --version
+
+# debian.yml
+## pillow prerequisites for Debian >= 10
+RUN apt-get -y -q install \
     libjpeg62-turbo-dev \
     libtiff5-dev \
     tcl8.6-dev \
@@ -112,23 +132,22 @@ RUN apt-get -y update \
     && apt-get -y -q install \
     libssl-dev \
     ## Setup OpenSSL dependancy
-    && pip3 install --upgrade pyOpenSSL==16.2.0 \
-    ###############################################
-    # [playbook] mariadb
-    ###############################################
-    # add repo from mariadb mirrors
-    # https://downloads.mariadb.org/mariadb/repositories
-    && apt-get install -y -q software-properties-common dirmngr \
+    && pip3.10 install --upgrade pyOpenSSL
+###############################################
+# [playbook] mariadb
+###############################################
+# add repo from mariadb mirrors
+# https://downloads.mariadb.org/mariadb/repositories
+RUN apt-get install -y -q software-properties-common dirmngr \
     && apt-key adv --fetch-keys "https://mariadb.org/mariadb_release_signing_key.asc" \
-    && add-apt-repository "deb [arch=amd64] http://nyc2.mirrors.digitalocean.com/mariadb/repo/${mariadbVersion}/debian buster main" \
+    && add-apt-repository "deb [arch=amd64] http://nyc2.mirrors.digitalocean.com/mariadb/repo/${mariadbVersion}/debian bullseye main" \
     # mariadb.yml
+    && apt-get remove -y -q --auto-remove mariadb-server \
     && apt-get update \
     && apt-get install -y -q \
-    mariadb-server \
-    mariadb-client \
-    mariadb-common \
-    libmariadbclient18 \
-    python3-mysqldb \
+    mariadb-server-10.5 \
+    mariadb-client-10.5 --fix-broken --fix-missing \
+    libmariadb-dev \
     psutils \
     ###############################################
     # psutil
@@ -136,7 +155,7 @@ RUN apt-get -y update \
     # pip3 install --upgrade psutil \
     # pip3 install --upgrade pip setuptools \
     # python3 -m pip install --upgrade pip setuptools wheel \
-    && python3 -m pip install -U psutil pip wheel setuptools \
+    && python3.10 -m pip install -U psutil pip wheel setuptools \
     # python3 -m pip install -U --user psutil pip wheel setuptools \
     # python3 -m ensurepip --upgrade \
     # python3 -m venv env && . ./env/bin/activate \
@@ -151,9 +170,9 @@ RUN apt-get -y update \
     fonts-cantarell \
     xfonts-75dpi \
     xfonts-base \
-    && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb \
-    && dpkg -i wkhtmltox_0.12.6-1.buster_amd64.deb \
-    && rm wkhtmltox_0.12.6-1.buster_amd64.deb \
+    && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb \
+    && dpkg -i wkhtmltox_0.12.6.1-2.bullseye_amd64.deb \
+    && rm wkhtmltox_0.12.6.1-2.bullseye_amd64.deb \
     ###############################################
     # redis
     ###############################################
@@ -168,23 +187,29 @@ RUN apt-get -y update \
     # [production] nginx
     ###############################################
     && apt-get install -y -q \
-    nginx \
-    ###############################################
-    # nodejs
-    ###############################################
-    # https://github.com/nodesource/distributions
-    # curl --silent --location https://deb.nodesource.com/setup_${nodejsVersion} | bash - \
-    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash \
-    && . ~/.bashrc \
-    && nvm install v16.14.1 \
-    # apt-get install -y -q nodejs \
-    # npm install -g npm@8.18.0 \
-    # npm install -g -y yarn \
-    # npm i resolve-deps \
+    nginx
+###############################################
+# nodejs
+###############################################
+# https://github.com/nodesource/distributions
+RUN curl --silent --location https://deb.nodesource.com/setup_${nodejsVersion} | bash - \
+    && apt-get install -y -q nodejs \
+    && sudo npm install -g -y yarn
+
+###############################################
+# Yarn install
+###############################################
+RUN apt remove -y cmdtest yarn \
+    && apt-get purge -y cmdtest yarn \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install yarn -y
+
     ###############################################
     # docker production setup
     ###############################################
-    && apt-get install -y -q \
+RUN apt-get install -y -q \
     # used for envsubst, making nginx cnf from template
     gettext-base \
     ###############################################
@@ -206,42 +231,61 @@ RUN apt-get -y update \
 USER $systemUser
 WORKDIR /home/$systemUser
 COPY ./ ./
-RUN npm install -g npm@8.18.0 \
-    && npm install -g -y yarn \
-    && npm i resolve-deps \
+
+
 
 ###############################################
 # COPY
 ###############################################
 # mariadb config
 COPY ./mariadb.cnf /etc/mysql/mariadb.cnf
-
+RUN echo "Starting mysql/mariadb"
 ###############################################
 # INSTALL FRAPPE
 ###############################################
 RUN sudo chmod 644 /etc/mysql/my.cnf \
-    && sudo service mysql start \
-    && mysql --user="root" --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysqlPass}';" \
-    ###############################################
-    # install bench
-    ###############################################
-    && python3 -m venv env && . ./env/bin/activate \
-    && python3 -m pip install --user --upgrade psutil pip setuptools wheel \
-    && sudo pip3 install frappe-bench \
-    && sudo pip install frappe-bench \
+    && sudo chmod 644 /etc/mysql/mariadb.cnf
+
+RUN sudo mkdir /var/run/mysqld \
+    && sudo chown -R mysql:mysql /var/run/mysqld \
+    && sudo sed -i 's/^#skip-grant-tables.*/skip-grant-tables/g' /etc/mysql/my.cnf \  
+    && echo "mysqld_safe &" > /tmp/config \
+    && echo "mysqladmin --silent --wait=30 ping || exit 1" >> /tmp/config \
+    && echo "mysql -e 'flush privileges; GRANT ALL PRIVILEGES ON *.* TO \"root\"@\"localhost\" WITH GRANT OPTION;'" >> /tmp/config \
+    && sudo mkdir -p /var/run/mysqld \
+    && sudo chown mysql:mysql /var/run/mysqld \
+    && sudo bash /tmp/config \
+    && sudo rm -f /tmp/config \
+      ### Set root password ()
+    && sudo mysqladmin -u root password ${mysqlPass} \
+    && sudo service mariadb stop \
+    && sudo sed -i 's/^skip-grant-tables.*/#skip-grant-tables/g' /etc/mysql/my.cnf \
+    && sudo service mariadb start
+
+###############################################
+# install bench
+###############################################
+RUN node --version && npm --version 
+RUN python3.10 -m venv --system-site-packages env \
+    && . ./env/bin/activate \
+    && cat env/pyvenv.cfg \
+    && python3.10 -m pip install --upgrade psutil pip setuptools wheel \
+    && sudo pip3.10 install frappe-bench \
     && chmod o+x /home/frappe \
     && bench init $benchFolderName --verbose --frappe-path $frappeRepo --frappe-branch $appBranch --python $pythonVersion \
-    #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion 
-    # cd into bench folder 
+    #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion
+    # cd into bench folder
     && cd $benchFolderName \
     # install payments
     && bench get-app payments \
     # install erpnext
     && bench get-app erpnext $erpnextRepo --branch $appBranch \
     # delete temp file
-    && sudo rm -rf /tmp/* \
-    # start new site
-    && bench new-site $siteName \
+    && sudo rm -rf /tmp/*
+###############################################    
+# start new site
+###############################################    
+RUN sudo service mariadb start && cd $benchFolderName && bench new-site $siteName \
     --mariadb-root-password $mysqlPass  \
     --admin-password $adminPass \
     && bench --site $siteName install-app erpnext \
