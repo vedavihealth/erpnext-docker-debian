@@ -16,7 +16,7 @@ sudo cp common_site_config_docker.json $benchWD/$benchFolderName/sites/common_si
 sudo cp supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 # set nginx config
-sudo -E /bin/bash -c "envsubst '\$NGINX_SERVER_NAME' < nginx.temp > /etc/nginx/conf.d/default.conf"
+sudo -E /bin/bash -c "envsubst '\$NGINX_SERVER_NAME,\$PORT' < nginx.temp > /etc/nginx/conf.d/default.conf"
 
 # start nginx
 sudo nginx
