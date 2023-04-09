@@ -276,6 +276,11 @@ RUN python3.10 -m venv --system-site-packages env \
     #  bench init frappe-bench --verbose --frappe-branch $appBranch --python $pythonVersion
     # cd into bench folder
     && cd $benchFolderName \
+    && bench get-app hrms \
+    && bench get-app education \
+    && bench get-app healthcare \
+    && bench get-app --branch version-14 https://github.com/resilient-tech/india-compliance.git \
+    && bench get-app non_profit \
     # install payments
     && bench get-app payments \
     # install erpnext

@@ -22,4 +22,9 @@ sudo -E /bin/bash -c "envsubst '\$NGINX_SERVER_NAME,\$PORT' < nginx.temp > /etc/
 sudo nginx
 
 # start supervisor
-sudo /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisor.conf
+if [ ! -f "/etc/supervisor/supervisord.conf" ]; then
+	sudo /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisor.conf
+else
+	sudo /usr/bin/supervisord
+fi
+
